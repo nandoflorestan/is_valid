@@ -10,7 +10,8 @@ class is_dict_union(Predicate):
 
     def __init__(self, *args, **kwargs):
         if args and isinstance(args[0], str):
-            key, *args = args
+            key = args[0]
+            args = args[1:]
         else:
             key = 'type'
         self._key = key

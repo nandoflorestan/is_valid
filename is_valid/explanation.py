@@ -128,17 +128,16 @@ class Explanation:
         self, include_valid=False, include_details=True, include_data=True,
         prefix=(),
     ):
-        return [
-            {
-                **explanation.dict(
-                    include_valid=include_valid,
-                    include_details=include_details,
-                    include_data=include_data,
-                ),
-                'path': path,
-            }
-            for path, explanation in self.by_path(prefix)
-        ]
+        alist = []
+        for path, explanation in self.by_path(prefix):
+            adict = explanation.dict(
+                include_valid=include_valid,
+                include_details=include_details,
+                include_data=include_data,
+            )
+            adict['path'] = path
+            alist.append(adict)
+        return alist
 
     def json(self, *args, include_valid=False, include_details=True, **kwargs):
         return json.dumps(self.dict(
