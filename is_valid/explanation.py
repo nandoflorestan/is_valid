@@ -1,5 +1,4 @@
 import json
-from collections import defaultdict
 
 
 def _dictify(value, include_valid):
@@ -25,19 +24,21 @@ def merge(*explanations):
     else:
         valid = True
 
-    details = defaultdict(list)
+    details = {}
     merged_explanations = []
 
     for explanation in explanations:
         if explanation.code in ['dict_where', 'not_dict_where']:
             for key, value in explanation.details.items():
+                if key not in details:
+                    details[key] = []
                 details[key].append(value)
         elif explanation.code in ['all_hold', 'not_all_hold']:
             merged_explanations.extend(explanation.details)
         else:
             merged_explanations.append(explanation)
 
-    if details:
+    if len(details):
         merged_explanations.append(Explanation(
             valid,
             'dict_where' if valid else 'not_dict_where',

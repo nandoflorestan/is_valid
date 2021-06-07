@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from .explanation import Explanation
 from .get import Get
 
@@ -69,21 +67,23 @@ class ContextError(Exception):
 class Context(object):
 
     def __init__(self, base={}):
-        self._values = defaultdict(list)
+        self._values = {}
         for key, value in base.items():
             self.push(key, value)
 
     def push(self, key, value):
+        if key not in self._values:
+            self._values[key] = []
         self._values[key].append(value)
 
     def pop(self, key):
         self._values[key].pop()
-        if not self._values[key]:
+        if not len(self._values[key]):  # Remove empty list from dict
             del self._values[key]
 
     def __call__(self, value):
         if isinstance(value, Get):
-            if not self._values[value._key]:
+            if value._key not in self._values:
                 raise ContextError(value._key)
             return value._transform(self._values[value._key][-1])
         return value

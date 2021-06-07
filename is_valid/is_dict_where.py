@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from .base import Predicate
 from .explanation import Explanation
 from .to_pred import to_pred
@@ -24,7 +22,7 @@ class is_dict_where(Predicate):
     _extra_pred = is_fixed(False, 'not_allowed', 'key is not allowed')
 
     def __init__(self, *args, **kwargs):
-        self._predicates = defaultdict(lambda: self._extra_pred)
+        self._predicates = {}
 
         if len(args) == 2 and len(kwargs) == 0:
             self._required = set(args[0])
@@ -46,6 +44,10 @@ class is_dict_where(Predicate):
 
     def _evaluate(self, data, explain, context):
         missing = {key for key in self._required if key not in data}
+
+        for key, value in data.items():
+            if key not in self._predicates:
+                self._predicates[key] = self._extra_pred
 
         if not explain:
             return not missing and all(
