@@ -3,6 +3,8 @@ from collections import defaultdict
 from datetime import datetime, date, time, timedelta
 import json
 import re
+##### explanation.py
+
 
 def _dictify(value, include_valid):
     if isinstance(value, Explanation):
@@ -194,6 +196,8 @@ class Explanation:
         if not isinstance(other, Explanation):
             raise TypeError
         return merge(self, other)
+
+##### get.py
 def identity(value):
     return value
 
@@ -207,6 +211,8 @@ class Get(object):
 
     def __repr__(self):
         return self._rep
+
+##### base.py
 
 
 
@@ -295,6 +301,8 @@ class Context(object):
 def instantiate(func):
     return func()
 
+##### is_eq.py
+
 
 class is_eq(Predicate):
     """
@@ -322,6 +330,8 @@ class is_eq(Predicate):
             (self._not_valid_exp if explain else False)
         )
 
+##### to_pred.py
+
 
 def to_pred(value):
     if isinstance(value, Predicate):
@@ -334,6 +344,8 @@ def to_pred(value):
         return is_tuple_where(*value)
     else:
         return is_eq(value)
+
+##### is_fixed.py
 
 
 class is_fixed(Predicate):
@@ -350,15 +362,17 @@ class is_fixed(Predicate):
     def _evaluate(self, data, explain, context):
         return self._explanation if explain else self._valid
 
+##### is_with.py
+
 
 def to_func(value):
     if callable(value):
         return value
 
-    def function(*args, **kwargs):
+    def func(*args, **kwargs):
         return value
 
-    return function
+    return func
 
 
 def dict_to_func(context):
@@ -407,6 +421,8 @@ class is_with(Predicate):
                 context.pop(key)
             return res
 
+##### is_with_context.py
+
 
 class is_with_context(is_with):
 
@@ -415,6 +431,8 @@ class is_with_context(is_with):
             key: values[-1]
             for key, values in context._values.items()
         }
+
+##### utils.py
 
 
 class explain(Predicate):
@@ -490,6 +508,8 @@ def default_context(pred, *args, **kwargs):
 
     return is_with_context(context_func, pred)
 
+##### is_instance.py
+
 
 class is_instance(Predicate):
     """
@@ -517,9 +537,13 @@ class is_instance(Predicate):
             (self._not_valid_exp if explain else False)
         )
 
+##### is_str.py
+
 
 #: A predicate that checks if the data is a string.
 is_str = is_instance(str, rep='a str')
+
+##### is_fixed.py
 
 
 class is_fixed(Predicate):
@@ -536,9 +560,13 @@ class is_fixed(Predicate):
     def _evaluate(self, data, explain, context):
         return self._explanation if explain else self._valid
 
+##### is_dict.py
+
 
 #: A predicate that checks if the data is a dictionary.
 is_dict = is_instance(dict, rep='a dict')
+
+##### is_transformed.py
 
 
 is_transformable = is_fixed(
@@ -582,13 +610,19 @@ class is_transformed(Predicate):
         else:
             return self._success(data, explain, context)
 
+##### is_int.py
+
 
 #: A predicate that checks if the data is an integer.
 is_int = is_instance(int, rep='an int')
 
+##### is_bytes.py
+
 
 #: A predicate that checks if the data is bytes.
 is_bytes = is_instance(bytes, rep='bytes')
+
+##### is_decodable_where.py
 
 
 class is_decodable_where(is_transformed):
@@ -602,11 +636,15 @@ class is_decodable_where(is_transformed):
             exceptions=[UnicodeDecodeError],
         )
 
+##### is_something.py
+
 
 #: A predicate that regardless of what data you put into will always consider
 #: it valid with the explanation 'Ddata is something.'. This is the weakest
 #: predicate possible.
 is_something = is_fixed(True, 'is_something', 'data is something')
+
+##### is_iterable.py
 
 
 @instantiate
@@ -628,6 +666,8 @@ class is_iterable(Predicate):
             return self._not_valid_exp if explain else False
         else:
             return self._valid_exp if explain else True
+
+##### is_iterable_of.py
 
 
 class is_iterable_of(Predicate):
@@ -675,6 +715,8 @@ class is_iterable_of(Predicate):
             for value in data
         )
 
+##### is_geq.py
+
 
 class is_geq(Predicate):
     """
@@ -704,6 +746,8 @@ class is_geq(Predicate):
             (self._not_valid_exp if explain else False)
         )
 
+##### is_leq.py
+
 
 class is_leq(Predicate):
     """
@@ -732,6 +776,8 @@ class is_leq(Predicate):
             if data <= context(self._value) else
             (self._not_valid_exp if explain else False)
         )
+
+##### is_in_range.py
 
 
 class is_in_range(Predicate):
@@ -773,6 +819,8 @@ class is_in_range(Predicate):
             self._stop(data, context=context)
         )
 
+##### is_json_where.py
+
 
 class is_json_where(is_transformed):
 
@@ -785,11 +833,15 @@ class is_json_where(is_transformed):
             exceptions=[ValueError],
         )
 
+##### is_nothing.py
+
 
 #: A predicate that regardless of what data you put into will always consider
 #: it invalid with the explanation 'Data is something.'. This is the strongest
 #: predicate possible.
 is_nothing = is_fixed(False, 'is_something', 'data is something')
+
+##### is_dict_where.py
 
 
 
@@ -868,6 +920,8 @@ class is_dict_where(Predicate):
         explanation.data = new_data
         return explanation
 
+##### is_in.py
+
 
 class is_in(Predicate):
     """
@@ -893,6 +947,8 @@ class is_in(Predicate):
             (self._not_valid_exp if explain else False)
         )
 
+##### is_superdict_where.py
+
 
 class is_superdict_where(is_dict_where):
     """
@@ -906,6 +962,8 @@ class is_superdict_where(is_dict_where):
     """
 
     _extra_pred = is_something
+
+##### is_subdict_where.py
 
 
 class is_subdict_where(is_dict_where):
@@ -921,6 +979,8 @@ class is_subdict_where(is_dict_where):
 
     def __init__(self, *args, **kwargs):
         super().__init__({}, dict(*args, **kwargs))
+
+##### is_not.py
 
 
 class is_not(Predicate):
@@ -944,6 +1004,8 @@ class is_not(Predicate):
             if explain else
             not self._predicate(data, context=context)
         )
+
+##### is_all.py
 
 
 class is_all(Predicate):
@@ -981,6 +1043,8 @@ class is_all(Predicate):
             for predicate in self._predicates
         )
 
+##### is_any.py
+
 
 class is_any(Predicate):
     """
@@ -1017,6 +1081,8 @@ class is_any(Predicate):
             for predicate in self._predicates
         )
 
+##### is_blank.py
+
 
 def blank(value):
     return not value
@@ -1030,9 +1096,13 @@ is_blank = explain(
 )
 is_not_blank = ~is_blank
 
+##### is_bool.py
+
 
 #: A predicate that checks if the data is a boolean.
 is_bool = is_instance(bool, rep='a bool')
+
+##### is_byte.py
 
 
 @instantiate
@@ -1042,6 +1112,8 @@ class is_byte(is_in_range):
 
     def __init__(self):
         super().__init__(0, 255, stop_in=True)
+
+##### is_cond.py
 
 
 is_no_match = is_fixed(False, 'no_match', 'none of the conditions match')
@@ -1083,13 +1155,19 @@ class is_cond(Predicate):
                 return predicate(pred_data, explain, context)
         return self._default(pred_data, explain, context)
 
+##### is_date.py
+
 
 #: A predicate that checks if the data is a date.
 is_date = is_instance(date, rep='a date')
 
+##### is_datetime.py
+
 
 #: A predicate that checks if the data is a datetime.
 is_datetime = is_instance(datetime, rep='a datetime')
+
+##### is_decodable.py
 
 
 class is_decodable(is_decodable_where):
@@ -1099,6 +1177,8 @@ class is_decodable(is_decodable_where):
             is_fixed(True, 'decodable', 'data is decodable'),
             encoding, errors,
         )
+
+##### is_decodable_json_where.py
 
 
 
@@ -1112,6 +1192,8 @@ class is_decodable_json_where(is_decodable_where):
             encoding=encoding,
             errors=errors,
         )
+
+##### is_dict_of.py
 
 
 class is_dict_of(Predicate):
@@ -1176,6 +1258,8 @@ class is_dict_of(Predicate):
             for key, value in data.items()
         )
 
+##### is_dict_union.py
+
 
 class is_dict_union(Predicate):
 
@@ -1224,9 +1308,13 @@ class is_dict_union(Predicate):
     def _evaluate(self, data, explain, context):
         return self._preds[data[self._key]](data, explain, context)
 
+##### is_float.py
+
 
 #: A predicate that checks if the data is a float.
 is_float = is_instance(float, rep='a float')
+
+##### is_gt.py
 
 
 class is_gt(Predicate):
@@ -1255,6 +1343,8 @@ class is_gt(Predicate):
             if data > context(self._value) else
             (self._not_valid_exp if explain else False)
         )
+
+##### is_if.py
 
 
 class is_if(Predicate):
@@ -1313,6 +1403,8 @@ class is_if(Predicate):
         for cond, then_ in reversed(cases):
             predicate = cls(cond, then_, predicate)
         return predicate
+
+##### is_iterable_where.py
 
 
 class is_iterable_where(Predicate):
@@ -1374,12 +1466,18 @@ class is_iterable_where(Predicate):
         explanation.data = new_data
         return explanation
 
+##### is_json.py
+
 
 is_json = is_json_where(is_fixed(True, 'json', 'data is json'))
+
+##### is_list.py
 
 
 #: A predicate that checks if the data is a list.
 is_list = is_instance(list, rep='a list')
+
+##### is_list_of.py
 
 
 class is_list_of(is_iterable_of):
@@ -1389,6 +1487,8 @@ class is_list_of(is_iterable_of):
     """
 
     prerequisites = [is_list]
+
+##### is_list_where.py
 
 
 class is_list_where(is_iterable_where):
@@ -1401,6 +1501,8 @@ class is_list_where(is_iterable_where):
     """
 
     prerequisites = [is_list]
+
+##### is_lt.py
 
 
 class is_lt(Predicate):
@@ -1428,6 +1530,8 @@ class is_lt(Predicate):
             if data < context(self._value) else
             (self._not_valid_exp if explain else False)
         )
+
+##### is_match.py
 
 
 class is_match(Predicate):
@@ -1474,6 +1578,8 @@ class is_match(Predicate):
             res = self._not_valid_exp if explain else False
         return res
 
+##### is_none.py
+
 
 @instantiate
 class is_none(Predicate):
@@ -1493,6 +1599,8 @@ class is_none(Predicate):
             if data is None else
             (self._not_valid_exp if explain else False)
         )
+
+##### is_null.py
 
 
 @instantiate
@@ -1516,6 +1624,8 @@ class is_null(Predicate):
             (self._not_valid_exp if explain else False)
         )
 
+##### is_nullable.py
+
 
 class is_nullable(Predicate):
 
@@ -1528,8 +1638,12 @@ class is_nullable(Predicate):
             return res
         return self._predicate(data, explain, context)
 
+##### is_number.py
+
 #: A predicate that checks if the data is a number.
 is_number = is_instance((int, float), rep='a number')
+
+##### is_object_where.py
 
 
 class is_object_where(Predicate):
@@ -1574,6 +1688,8 @@ class is_object_where(Predicate):
             for attr, predicate in self._predicates.items()
         )
 
+##### is_one.py
+
 
 class is_one(Predicate):
     """
@@ -1612,6 +1728,8 @@ class is_one(Predicate):
                 one = True
         return one
 
+##### is_optional.py
+
 
 class is_optional(Predicate):
 
@@ -1623,6 +1741,8 @@ class is_optional(Predicate):
         if res:
             return res
         return self._predicate(data, explain, context)
+
+##### is_pre.py
 
 
 class is_pre(Predicate):
@@ -1653,9 +1773,13 @@ class is_pre(Predicate):
                 data = valid.data
         return valid
 
+##### is_set.py
+
 
 #: A predicate that checks if the data is a set.
 is_set = is_instance(set, rep='a set')
+
+##### is_set_of.py
 
 
 class is_set_of(is_iterable_of):
@@ -1672,16 +1796,24 @@ class is_set_of(is_iterable_of):
             {data[i]: e for i, e in explanation.details.items()},
         )
 
+##### is_time.py
+
 
 #: A predicate that checks if the data is a time.
 is_time = is_instance(time, rep='a time')
 
+##### is_timedelta.py
+
 
 is_timedelta = is_instance(timedelta, rep='a timedelta')
+
+##### is_tuple.py
 
 
 #: A predicate that checks if the data is a tuple.
 is_tuple = is_instance(tuple, rep='a tuple')
+
+##### is_tuple_of.py
 
 
 class is_tuple_of(is_iterable_of):
@@ -1697,6 +1829,8 @@ class is_tuple_of(is_iterable_of):
         if explain:
             res.data = tuple(res.data)
         return res
+
+##### is_tuple_where.py
 
 
 class is_tuple_where(is_iterable_where):
@@ -1715,6 +1849,8 @@ class is_tuple_where(is_iterable_where):
         if explain:
             res.data = tuple(res.data)
         return res
+
+##### is_when.py
 
 
 class is_when(Predicate):
@@ -1737,6 +1873,8 @@ class is_when(Predicate):
             predicate = cls(cond, then_, predicate)
         return predicate
 
+##### test.py
+
 
 def assert_valid(data, predicate, context={}, message=None):
     """
@@ -1752,6 +1890,8 @@ def assert_valid(data, predicate, context={}, message=None):
         raise AssertionError(message)
 
     return valid.data
+
+##### __init__.py
 
 __all__ = [
     Explanation, is_fixed, is_something, is_nothing, is_not, is_all, is_any,

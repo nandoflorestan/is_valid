@@ -7,10 +7,10 @@ def to_func(value):
     if callable(value):
         return value
 
-    def function(*args, **kwargs):
+    def func(*args, **kwargs):
         return value
 
-    return function
+    return func
 
 
 def dict_to_func(context):

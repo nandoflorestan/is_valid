@@ -47,10 +47,11 @@ from datetime import datetime, date, time, timedelta
 import json
 import re'''
 
-with open("valid.py", "w", encoding="utf-8") as outfile:
+with open("transvalid.py", "w", encoding="utf-8") as outfile:
     outfile.write(PREAMBLE)
-    for fname in paths:
-        with open(fname, "r", encoding="utf-8") as infile:
+    for path in paths:
+        with open(path, "r", encoding="utf-8") as infile:
+            outfile.write("\n##### {}\n".format(str(path).split("/")[-1]))
             for line in infile:
                 if line.strip().startswith("from ") or line.startswith(
                     "import "
@@ -59,4 +60,4 @@ with open("valid.py", "w", encoding="utf-8") as outfile:
                 outfile.write(line)
 
 if __name__ == '__main__':
-    import valid  # to spit a stacktrace if there is a problem
+    import transvalid  # to spit a stacktrace if there is a problem
