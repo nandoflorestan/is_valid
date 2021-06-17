@@ -1,17 +1,22 @@
-**transvalid** is a Python library for validation predicates that works
-in CPython and also in the browser via transpilation through Transcrypt.
+Ever dream of a validation library that would work the same in the server as
+in the client?
 
-Transcrypt requires code to rely on the Python stdlib as little as possible.
+**transvalid** is a Python validation library that works
+in CPython and also in the browser via transpilation to JS through
+[Transcrypt](https://www.transcrypt.org/).
+
+(Transcrypt requires code to rely on the Python stdlib as little as possible.
 I tried converting Cerberus, Colander and schema, but all of these proved
 too hard. For instance, the schema library wouldn't work with Transcrypt
 because JS can only have strings as dict keys, but schema wants
-`Optional("email")` (a Python type) to be a key.
+`Optional("email")` (a Python type) to be a key.)
 
 In the end, [is_valid](https://github.com/daanvdk/is_valid) was
 the only library that worked with Transcrypt.
 
-So this is a fork of **is_valid**, is a simple lightweight python library for
-validation predicates.
+So **transvalid** is a fork of **is_valid**, a simple lightweight
+Python library for validation predicates.
+
 Predicates are functions that given a certain input return either `True` or
 `False` according to some rules that the input either follows or does not
 follow.
@@ -123,8 +128,8 @@ Which would've made it instantly clear to us what to do.
 
 ## Installation
 
-**transvalid** is on [PyPI](https://pypi.python.org/pypi/transvalid); you can
-install it with:
+**transvalid** shall soon be on
+[PyPI](https://pypi.python.org/pypi/transvalid); then you can install it with:
 ```
 pip install transvalid
 ```
@@ -144,3 +149,9 @@ During development, in order to build the transvalid.py module,
 install Transcrypt, then do:
 
     ./concat.py && transcrypt transvalid.py
+
+To use transvalid in your separate application, install it in your virtualenv:
+
+    pip install -e .
+
+...and then just `import transvalid`.
