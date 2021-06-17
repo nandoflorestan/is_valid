@@ -19,7 +19,7 @@ class is_not(Predicate):
 
     def _evaluate(self, data, explain, context):
         return (
-            ~self._predicate.explain(data, context)
+            self._predicate.explain(data, context).invert()
             if explain else
             not self._predicate(data, context=context)
         )

@@ -105,7 +105,7 @@ class Explanation:
     def __bool__(self):
         return self.valid
 
-    def __invert__(self):
+    def invert(self):
         return Explanation(
             not self.valid, self.code, self.message, self.details
         )

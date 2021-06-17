@@ -11,4 +11,4 @@ is_blank = explain(
     message_valid='data is blank',
     message_invalid='data is not blank',
 )
-is_not_blank = ~is_blank
+is_not_blank = is_blank.invert()

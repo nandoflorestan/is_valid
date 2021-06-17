@@ -50,7 +50,7 @@ class Predicate(object):
         from .is_any import is_any
         return is_any(self, other)
 
-    def __invert__(self):
+    def invert(self):
         from .is_not import is_not
         return is_not(self)
 

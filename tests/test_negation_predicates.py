@@ -25,7 +25,7 @@ class TestNegationPredicates(TestCase):
     def test_not_with_invert(self):
         pred = is_lt(1)
         normal = is_not(pred)
-        with_invert = ~pred
+        with_invert = pred.invert()
         self.assertEqual(normal.__class__, normal.__class__)
         self.assertEqual(normal._predicate, with_invert._predicate)
 

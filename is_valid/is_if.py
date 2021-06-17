@@ -50,7 +50,7 @@ class is_if(Predicate):
         elif self._else is not None:
             res = self._else(data, explain, context)
         else:
-            res = ~res if explain else not res
+            res = res.invert() if explain else not res
         return res
 
     @classmethod

@@ -111,7 +111,7 @@ class Explanation:
     def __bool__(self):
         return self.valid
 
-    def __invert__(self):
+    def invert(self):
         return Explanation(
             not self.valid, self.code, self.message, self.details
         )
@@ -264,7 +264,7 @@ class Predicate(object):
     def __or__(self, other):
         return is_any(self, other)
 
-    def __invert__(self):
+    def invert(self):
         return is_not(self)
 
 
@@ -990,7 +990,7 @@ class is_not(Predicate):
 
     def _evaluate(self, data, explain, context):
         return (
-            ~self._predicate.explain(data, context)
+            self._predicate.explain(data, context).invert()
             if explain else
             not self._predicate(data, context=context)
         )
@@ -1084,7 +1084,7 @@ is_blank = explain(
     message_valid='data is blank',
     message_invalid='data is not blank',
 )
-is_not_blank = ~is_blank
+is_not_blank = is_blank.invert()
 
 ##### is_bool.py
 
@@ -1384,7 +1384,7 @@ class is_if(Predicate):
         elif self._else is not None:
             res = self._else(data, explain, context)
         else:
-            res = ~res if explain else not res
+            res = res.invert() if explain else not res
         return res
 
     @classmethod
