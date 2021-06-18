@@ -145,8 +145,12 @@ But for web deployment a single large file is much better than the ~70 small
 modules in that directory, so we concatenate these in `concat.py`, generating
 `transvalid.py`.
 
-During development, in order to build the transvalid.py module,
-install Transcrypt, then do:
+**transvalid** depends on the json module which for the moment exists only in
+my fork of Transcrypt:
+
+    pip install -e git://github.com/nandoflorestan/transcrypt.git@json#egg=transcrypt
+
+During transvalid development, build the transvalid.py module with:
 
     ./concat.py && transcrypt transvalid.py
 
